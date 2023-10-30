@@ -1,0 +1,11 @@
+[flake8]
+exclude=
+    *.pyc,
+    venv/.,
+    migrations,
+    __init__.py
+ignore=
+    W293,E126,E131,W503
+max-line-length=120
+format=html
+htmldir=reports/flake8_report

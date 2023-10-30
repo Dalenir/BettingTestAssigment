@@ -1,0 +1,15 @@
+pytest
+httpx
+
+allure-pytest
+allure-combine
+pytest-cov==4.1.0
+pytest-metadata==3.0.0
+pytest-html==3.2.0
+pytest-clarity==1.0.1
+pytest-xdist==3.3.1
+pytest-cases==3.6.14
+pytest-asyncio==0.21.1
+
+flake8
+flake8-html

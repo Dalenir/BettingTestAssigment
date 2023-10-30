@@ -1,0 +1,27 @@
+aiohttp==3.8.5
+aiogram==3.0.0rc1
+redis~=5.0.0
+SQLAlchemy==2.0.20
+asyncpg==0.28.0
+sqlalchemy-utils==0.41.1
+cryptography==41.0.3
+hdwallet==2.2.1
+tronpy==0.4.0
+eth-abi>=4.0.0a
+httpx
+web3>=6.0.0b8
+# TODO: Переделать на aiohttp
+requests==2.31.0
+qrcode==7.4.2
+Image==1.5.33
+fastapi==0.103.0
+uvicorn==0.23.2
+python-multipart==0.0.6
+colorama
+segno==1.5.2
+qrcode-artistic==2.1.0
+python-dateutil==2.8.2
+pydantic-settings==2.0.3
+alembic==1.11.3
+python-jose[cryptography]==3.3.0
+fastapi-csrf-protect==0.3.2

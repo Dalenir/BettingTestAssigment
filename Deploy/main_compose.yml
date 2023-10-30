@@ -1,0 +1,109 @@
+version: "3.8"
+
+services:
+
+  postgres:
+    build:
+      context: ./postgres
+      dockerfile: postgres.dockerfile
+    container_name: CryptoPG
+    env_file:
+      - .env
+    ports:
+      - "5454:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - name_net
+
+  nginx:
+    container_name: CryptoNginx
+    image: nginx:1.25-bookworm
+    ports:
+      - 8075:80
+    volumes:
+      - ./nginx/default.conf:/etc/nginx/templates/nginx.conf.template
+    working_dir: /usr/share/nginx/html
+    environment:
+      NGINX_ENVSUBST_OUTPUT_DIR: /etc/nginx
+      WEBAPP_PORT: '${WEBAPP_PORT}'
+      WEBHOOK_PORT: '${WEBHOOK_PORT}'
+    env_file:
+      - .env
+    depends_on:
+      - web_app
+      - webhook
+    networks:
+      - name_net
+
+  redis:
+    image: redis:7.0.4
+    container_name: CryptoRed
+    env_file:
+      - .env
+    ports:
+      - ":2279"
+    command: redis-server --requirepass ${RED_PASS:?RED_PASS variable is not set} --save 20 1 --loglevel warning --port 2279
+    volumes:
+      - ./Data/Redis/data:/data
+    networks:
+      - name_net
+
+  crypto_api:
+    build:
+      context: ../bet-maker
+      dockerfile: api.dockerfile
+      target: core
+    depends_on:
+      - postgres
+      - redis
+    container_name: ${CRYPTO_API_HOSTNAME}
+    env_file:                        # For production use secrets
+      - .env
+    environment:
+      APP_MODE: Production
+    expose:
+      - "${CRYPTO_API_PORT}"
+    command: python3 main.py
+    networks:
+      - name_net
+
+  web_app:
+    env_file:
+      - .env
+    build:
+      context: ../web-app
+      dockerfile: ../web-app/.dockerfile
+      target: runner
+      args:
+        NEXT_PUBLIC_DOMAIN: ${NEXT_PUBLIC_DOMAIN}
+        WEBAPP_PORT: ${WEBAPP_PORT}
+    container_name: CryptoWebapp
+    depends_on:
+      - crypto_api
+    expose:
+      - ${WEBAPP_PORT}
+    networks:
+      - name_net
+
+
+  webhook:
+    volumes:
+      - ../tg_bot:/Cryptobot
+    build: ../tg_bot
+    container_name: Webappbot
+    command: bash -c 'python3 main.py'
+    env_file:
+      - .env
+    expose:
+      - '${WEBHOOK_PORT}'
+    networks:
+      - name_net
+
+
+networks:
+  name_net:
+    driver: bridge
+
+volumes:
+  postgres_data:

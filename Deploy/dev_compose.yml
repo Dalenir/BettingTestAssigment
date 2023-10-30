@@ -1,0 +1,42 @@
+version: "3.8"
+
+services:
+
+  postgres:
+    image: postgres:16.0-bookworm
+    container_name: ${POSTGRES_HOST}
+    env_file:
+      - .env
+    ports:
+      - "5454:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - name_net
+
+  bet_maker_api:
+    build:
+      context: ../bet-maker
+      dockerfile: api.dockerfile
+      target: test_extended
+    depends_on:
+      - postgres
+    container_name: ${BET_API_HOSTNAME}
+    env_file:                              # For production use secrets
+      - .env
+    environment:
+      APP_MODE: Development
+    ports:
+      - "${BET_API_PORT}:${BET_API_PORT}"  # In production use no "ports" directive, only "expose" with BET_API_PORT
+    volumes:
+      - ../bet-maker:/bet-maker            # Reference and fast reloading. Do not change COPY directive in dockerfile
+    command: python3 main.py
+    networks:
+      - name_net
+
+networks:
+  name_net:
+    driver: bridge
+
+volumes:
+  postgres_data:
