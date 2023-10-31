@@ -12,7 +12,7 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data
     networks:
-      - name_net
+      - bet_net
 
   bet_maker_api:
     build:
@@ -21,21 +21,38 @@ services:
       target: test_extended
     depends_on:
       - postgres
+      - line_provider_api
     container_name: ${BET_API_HOSTNAME}
     env_file:                              # For production use secrets
       - .env
     environment:
       APP_MODE: Development
     ports:
-      - "${BET_API_PORT}:${BET_API_PORT}"  # In production use no "ports" directive, only "expose" with BET_API_PORT
+      - "${BET_API_PORT}:${BET_API_PORT}"
     volumes:
       - ../bet-maker:/bet-maker            # Reference and fast reloading. Do not change COPY directive in dockerfile
     command: python3 main.py
     networks:
-      - name_net
+      - bet_net
+
+  line_provider_api:
+    build:
+      context: ../line-provider
+      dockerfile: Dockerfile
+      args:
+        API_PORT: ${LINE_API_PORT}
+    container_name: ${LINE_API_HOSTNAME}
+    env_file:
+      - .env
+    ports:                                 # In production use no "ports" directive, only "expose" with LINE_API_PORT
+      - "${LINE_API_PORT}:${LINE_API_PORT}"
+    volumes:
+      - ../line-provider:/line-provider    # Reference and fast reloading. Do not change COPY directive in dockerfile
+    networks:
+      - bet_net
 
 networks:
-  name_net:
+  bet_net:
     driver: bridge
 
 volumes:

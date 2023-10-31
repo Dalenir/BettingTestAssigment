@@ -1,0 +1,38 @@
+General Information
+You are tasked with developing a small system that accepts user bets on specific events, such as sporting events. The system should consist of two independent services:
+
+Line Provider Service: This service provides information about the events.
+Bet Maker Service: This service allows users to place bets on these events.
+Description of the Line Provider Service
+The Line Provider Service should provide information about events on which bets can be placed. In this simplified system, bets are only accepted on the first team's win. Therefore, event information should include at least:
+
+Unique event identifier (string or number).
+Betting odds for the first team's win (a strictly positive number with two decimal places).
+Betting deadline (timestamp) by which bets are accepted for the event.
+Current event status.
+In this simple system, an event can have one of three statuses:
+
+Incomplete
+Completed with a win for the first team
+Completed with a win for the second team, resulting in a loss for the first team (there are no ties in these events).
+The API for the Line Provider Service is not specified and is at your discretion. Event information can be stored in memory without using any external storage. It is logical to provide a utility API that allows dynamically creating new events and changing the status of existing ones. You can find a template implementation for the Line Provider Service on GitHub: Link to GitHub. This template implementation stores event information in memory and implements a basic API for retrieving and modifying events.
+
+Description of the Bet Maker Service
+The Bet Maker Service is responsible for accepting bets on events from users. Event information should be obtained from the Line Provider Service. In particular, the Bet Maker Service needs to be informed of changes in the status of events (transition to a completed status with a win or loss) to determine whether a bet was won or lost.
+
+Interaction between services can be implemented through requests to the Line Provider Service, calling a callback URL on the Bet Maker Service when the event status changes on the Line Provider's side, or through message exchange between services via a queue.
+
+The Bet Maker Service should have the following API:
+
+GET /events: Returns a list of events on which bets can be placed. These are events for which the betting deadline has not yet passed. The list of events is provided by the Line Provider Service, and there may be a slight delay in the "freshness" of the list for new events (new events may appear in the Bet Maker Service API with a slight delay compared to the Line Provider Service).
+
+POST /bet: Places a bet on an event. The request body should contain a JSON object with the event identifier (string or number) and the bet amount (a strictly positive number with two decimal places). The response should include at least a unique bet identifier.
+
+GET /bets: Returns the history of all placed bets. It should return an array of JSON objects containing information about the bets, including their identifiers and current statuses. The status of a bet can be one of the following: "not yet played" (corresponding to an event that has not yet completed), "won" (corresponding to an event that has completed with a win for the first team), or "lost" (corresponding to an event that has completed with a loss for the first team). Bet information should be stored in a storage solution of your choice (e.g., Redis, PostgreSQL, etc.).
+
+Requirements for Frameworks, Infrastructure, and Code
+The recommended framework for implementing the services is FastAPI, and the Python version is 3.10. Interactions between the Line Provider and Bet Maker services, as well as interactions with their storage solutions, should be fully asynchronous.
+
+The Line Provider and Bet Maker services, as well as additional storage solutions and other infrastructure elements, should be dockerized and launched through Docker Compose.
+
+Additional benefits include adhering to the PEP8 standard, having tests, and using type hints.

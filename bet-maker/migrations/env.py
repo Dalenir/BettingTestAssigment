@@ -5,13 +5,13 @@ from alembic import context
 from sqlalchemy import engine_from_config
 from sqlalchemy import pool
 
-from app.adapters.databases.postgres import Base
-from settings import api_settings
+from app.adapters.postgres import Base
+from settings import get_api_settings
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
 config = context.config
-postgres_url=api_settings.postgres_url
+postgres_url=get_api_settings().postgres_url
 config.set_main_option("sqlalchemy.url", postgres_url)
 
 # Interpret the config file for Python logging.
@@ -80,7 +80,7 @@ def run_migrations_online() -> None:
         with context.begin_transaction():
             # Creating all needed shemas
             # for schema in BaseShemas:
-            context.execute("""CREATE SCHEMA IF NOT EXISTS crypto; \n """)
+            context.execute("""CREATE SCHEMA IF NOT EXISTS bet; \n """)
             context.run_migrations()
 
 
