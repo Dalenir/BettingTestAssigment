@@ -133,5 +133,4 @@ dmypy.json
 
 # Logs
 bot_logs*
-**/migrations/versions/*
 **/reports/*
