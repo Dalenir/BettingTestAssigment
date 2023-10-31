@@ -1,6 +1,9 @@
 # BettingTestAssigment
 
 ![FastAPI](https://img.shields.io/badge/FastAPI-005571?style=for-the-badge&logo=fastapi)![Postgres](https://img.shields.io/badge/postgres-%23316192.svg?style=for-the-badge&logo=postgresql&logoColor=white)![Docker](https://img.shields.io/badge/docker-%230db7ed.svg?style=for-the-badge&logo=docker&logoColor=white)
+
+Simple betting service and basic data providing service with PostgreSQL database. Rules in /rules folder
+
 ---
 
 ## How to spin it for the first time:
@@ -46,7 +49,7 @@ All tests artifacts are located at /bet-maker/reports
   - The preferred methods for information exchange in the task don't mention direct database queries.
   - Adding a message queue as an additional service would complicate the system without clear advantages.
   - The task allows for a slight delay in data updates.
-  - Implementing a callback endpoint to update bet status would require minimal authentication, which would add complexity and increase processing time.
+  - Implementing a callback endpoint to update bet status would require minimal authentication, which would add complexity and increase time to make this assigment.
 
 - **Three simple endpoints are separated into three distinct routers:**
   - Primarily for demonstrating my preferred way of organizing files and modules.
@@ -55,7 +58,7 @@ All tests artifacts are located at /bet-maker/reports
 
 - **Formatting:**
   - Type hints are used sufficiently to assist with development in IDEs.
-  - Adherence to PEP8 with slightly modified rules, including increased line length. A full list of modifications can be found in /tests/.flake8.
+  - Adherence to PEP8 with slightly modified rules, including increased line length. A full list of ignored formatting rules can be found in /tests/.flake8.
 
 ## Steps to make this service good
 #### In a world where I have all the time in it.
